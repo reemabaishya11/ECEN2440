@@ -1,0 +1,44 @@
+import ir_rx
+from machine import Pin
+from ir_rx.nec import NEC_8 # Use the NEC 8-bit class
+from ir_rx.print_error import print_error # for debugging
+import time
+
+switch = Pin(19, Pin.IN)
+#rf reciever pins set to inputs
+RF1 = Pin(15, Pin.IN)
+RF2 = Pin(14, Pin.IN)
+RF3 = Pin(13, Pin.IN)
+RF4 = Pin(12, Pin.IN)
+
+#LED pins set to output
+LED1 = Pin(11, Pin.OUT)
+LED2 = Pin(10, Pin.OUT)
+LED3 = Pin(9, Pin.OUT)
+LED4 = Pin(8, Pin.OUT)
+
+# Callback function to execute when an IR code is received
+def ir_callback(data, addr, _):
+    print(f"Received NEC command! Data: 0x{data:02X}, Addr: 0x{addr:02X}")
+
+# Setup the IR receiver
+ir_pin = Pin(17, Pin.IN, Pin.PULL_UP) # Adjust the pin number based on your wiring
+ir_receiver = NEC_8(ir_pin, callback=ir_callback)
+
+# Optional: Use the print_error function for debugging
+ir_receiver.error_function(print_error)
+
+# Main loop to keep the script running
+while True: 
+    if switch.value()==0:
+        print("IR")
+
+
+    #if a button is clicked on rf transmitter, then the corresponding LED should light up
+    if switch.value() == 1:
+        LED1.value(RF1.value())
+        LED2.value(RF2.value())
+        LED3.value(RF3.value())
+        LED4.value(RF4.value())
+        print("RF")
+    time.sleep_ms(1000)
