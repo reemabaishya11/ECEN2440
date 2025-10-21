@@ -13,23 +13,8 @@ LED3 = Pin(9, Pin.OUT)
 LED4 = Pin(8, Pin.OUT)
 
 #if a button is clicked on rf transmitter, then the corresponding LED should light up
-while True: 
-    if ( RF1.value() == 1):
-        LED1.high()
-    else:
-        LED1.low()
-
-    if (RF2.value() == 1):
-        LED2.high()
-    else:
-        LED2.low()
-
-    if (RF3.value() == 1):
-        LED3.high()
-    else:
-        LED3.low()
-
-    if (RF4.value() ==1):
-        LED4.high()
-    else:
-        LED4.low()
+while True:
+    LED1.value(RF1.value())
+    LED2.value(RF2.value())
+    LED3.value(RF3.value())
+    LED4.value(RF4.value())
