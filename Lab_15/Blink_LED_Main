@@ -1,14 +1,17 @@
-from machine import Pin
-from utime import sleep
-
-pin = Pin("LED", Pin.OUT)
-
-print("LED starts flashing...")
-while True:
-    try:
-        pin.toggle()
-        sleep(1)
-    except KeyboardInterrupt:
-        break
-pin.off()
-print("Finished.")
+from machine import Pin, PWM
+# create PWM object from a pin and set the frequency = 20Hz of slice associated with pin 18
+# and duty cycle = 50%, duty_u16 sets the duty cycle as a ratio duty_u16 / 65535
+pwm0 = PWM(Pin(1), freq=10, duty_u16=32768) # frequency was changed to 10Hz
+pwm0.freq() # get the current frequency of slice 0
+pwm0.duty_u16() # get the current duty cycle of channel A, range 0-65535
+print(pwm0)
+pwm1 = PWM(Pin(2), freq=10, duty_u16=32768) # frequency was changed to 10Hz
+pwm1.freq() # get the current frequency of slice 0
+pwm1.duty_u16() # get the current duty cycle of channel A, range 0-65535
+print(pwm1)
+pwm2 = PWM(Pin(3), freq=10, duty_u16=32768) # frequency was changed to 10Hz
+pwm2.freq() # get the current frequency of slice 0
+pwm2.duty_u16() # get the current duty cycle of channel A, range 0-65535
+print(pwm2)
+while True: #while loop to make the LED continue blinking
+    continue
