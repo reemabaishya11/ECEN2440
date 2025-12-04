@@ -1,0 +1,95 @@
+# use seesaw.py with this
+from machine import I2C, Pin
+import seesaw
+import time
+import math
+from machine import PWM
+
+i2c = I2C(0, scl=Pin(17), sda=Pin(16))
+seesaw_device = seesaw.Seesaw(i2c, addr=0x50)
+
+pwm_rate = 2000
+ain1_ph = Pin(12, Pin.OUT)
+ain2_en = PWM(13, freq=pwm_rate, duty_u16=0)
+bin1_ph = Pin(10, Pin.OUT)
+bin2_en = PWM(11, freq=pwm_rate, duty_u16=0)
+
+pwm = min(max(int(2**16 * abs(1)), 0), 30000)
+
+JOYSTICK_X_PIN = 14
+JOYSTICK_Y_PIN = 15
+
+joystick_center_x = 511
+joystick_center_y = 497
+
+buzzer_pin = PWM(Pin(15))
+buzzer_pin.freq(440)
+buzzer_pin.duty_u16(0)
+
+freq_up = 800
+freq_down = 1000
+freq_left = 400
+freq_right = 600
+
+def main():
+    global last_buttons
+
+    last_x = seesaw_device.analog_read(JOYSTICK_X_PIN)
+    last_y = seesaw_device.analog_read(JOYSTICK_Y_PIN)
+    joystick_threshold = 50
+
+    while True:
+        
+
+        current_x = seesaw_device.analog_read(JOYSTICK_X_PIN)
+        current_y = seesaw_device.analog_read(JOYSTICK_Y_PIN)
+
+        if abs(current_x - last_x) > joystick_threshold or abs(current_y - last_y) > joystick_threshold:
+            print("Joystick moved - X:", current_x, ", Y:", current_y)
+            last_x, last_y = current_x, current_y
+
+        # Motors and Buzzer
+        if current_y < joystick_center_y - joystick_threshold:  # Up
+            ain1_ph.high()
+            ain2_en.duty_u16(pwm)
+            bin1_ph.high()
+            bin2_en.duty_u16(pwm)
+            buzzer_pin.freq(freq_up)
+            buzzer_pin.duty_u16(30000)
+
+        elif current_y > joystick_center_y + joystick_threshold:  # Down
+            ain1_ph.low()
+            ain2_en.duty_u16(pwm)
+            bin1_ph.low()
+            bin2_en.duty_u16(pwm)
+            buzzer_pin.freq(freq_down)
+            buzzer_pin.duty_u16(30000)
+
+        elif current_x < joystick_center_x - joystick_threshold:  # Left
+            ain1_ph.high()
+            ain2_en.duty_u16(pwm)
+            bin1_ph.low()
+            bin2_en.duty_u16(pwm)
+            buzzer_pin.freq(freq_left)
+            buzzer_pin.duty_u16(30000)
+
+        elif current_x > joystick_center_x + joystick_threshold:  # Right
+            ain1_ph.low()
+            ain2_en.duty_u16(pwm)
+            bin1_ph.high()
+            bin2_en.duty_u16(pwm)
+            buzzer_pin.freq(freq_right)
+            buzzer_pin.duty_u16(30000)
+
+        else:
+            ain1_ph.high()
+            ain2_en.duty_u16(0)
+            bin1_ph.high()
+            bin2_en.duty_u16(0)
+            buzzer_pin.duty_u16(0)
+
+    
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    main()
