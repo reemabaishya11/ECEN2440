@@ -22,6 +22,7 @@ JOYSTICK_Y_PIN = 15
 joystick_center_x = 511
 joystick_center_y = 497
 
+# these are the buzzer setup
 buzzer_pin = PWM(Pin(15))
 buzzer_pin.freq(440)
 buzzer_pin.duty_u16(0)
