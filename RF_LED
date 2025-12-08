@@ -1,0 +1,20 @@
+from machine import Pin
+
+#rf reciever pins set to inputs
+RF1 = Pin(15, Pin.IN)
+RF2 = Pin(14, Pin.IN)
+RF3 = Pin(13, Pin.IN)
+RF4 = Pin(12, Pin.IN)
+
+#LED pins set to output
+LED1 = Pin(11, Pin.OUT)
+LED2 = Pin(10, Pin.OUT)
+LED3 = Pin(9, Pin.OUT)
+LED4 = Pin(8, Pin.OUT)
+
+#if a button is clicked on rf transmitter, then the corresponding LED should light up
+while True:
+    LED1.value(RF1.value())
+    LED2.value(RF2.value())
+    LED3.value(RF3.value())
+    LED4.value(RF4.value())
